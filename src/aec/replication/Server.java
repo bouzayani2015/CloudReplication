@@ -17,12 +17,13 @@ public class Server {
 	public static void main(String[] args)
 			throws Exception {
 		PropertyConfigurator.configure("src/resources/log4j.properties");
-		int port = 5888;
+		int port = 9010;
 		
 		RequestHandlerRegistry reg = RequestHandlerRegistry.getInstance();
-		reg.registerHandler("delete", new HermesDeleteHandler());
-		reg.registerHandler("get", new HermesGetHandler());
-		reg.registerHandler("put", new HermesPutHandler());
+		reg.registerHandler("create", new CreateHandler());
+		reg.registerHandler("read", new ReadHandler());
+		reg.registerHandler("update", new UpdateHander());
+		reg.registerHandler("delete", new DeleteHandler());
 		Receiver receiver = new Receiver(port);
 		receiver.start();
 
