@@ -1,3 +1,0 @@
-INFO main edu.kit.aifb.dbe.hermes.RequestHandlerRegistry - Registered handler of type HermesDeleteHandler for target delete
-INFO main edu.kit.aifb.dbe.hermes.RequestHandlerRegistry - Registered handler of type HermesGetHandler for target get
-INFO main edu.kit.aifb.dbe.hermes.RequestHandlerRegistry - Registered handler of type HermesPutHandler for target put
