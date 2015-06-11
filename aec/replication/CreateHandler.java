@@ -11,6 +11,7 @@ import edu.kit.aifb.dbe.hermes.AsyncCallbackRecipient;
 import edu.kit.aifb.dbe.hermes.IRequestHandler;
 import edu.kit.aifb.dbe.hermes.Request;
 import edu.kit.aifb.dbe.hermes.Response;
+import edu.kit.aifb.dbe.hermes.Sender;
 
 /**
  *
@@ -19,9 +20,13 @@ import edu.kit.aifb.dbe.hermes.Response;
  */
 public class CreateHandler
 		implements IRequestHandler, AsyncCallbackRecipient {
+	
+	private static CreateHandler createHandler = new CreateHandler();
 
 	@Override
 	public Response handleRequest(Request req) {
+
+		ReplicationPath path = new ReplicationPath();
 		List<Serializable> items = new ArrayList<Serializable>();
 		items = req.getItems();
 		String key = (String) items.get(0);
@@ -30,29 +35,30 @@ public class CreateHandler
 		System.out.println("Got " + value + " for key " + key);
 		Storage.getInstance().create(key, value);
 		Response resp = new Response(Storage.getInstance().read(key), "Result for create:", true, req);
-		System.out.println("Result for reate is :" + Storage.getInstance().read(key));
+		System.out.println("Result for create is :" + Storage.getInstance().read(key));
 		// TODO Forward the request according to the replication path
+		
+		// forward the create request to another server
+		Sender sender = new Sender("localhost", 6000);
+		sender.sendMessageAsync(req, createHandler);
 
 		return resp;
 	}
-
+	
 	@Override
 	public boolean requiresResponse() {
 		return true;
 	}
 	
 	@Override
-	public boolean hasPriority() {
-		// TODO Auto-generated method stub
+	public boolean hasPriority() { // TODO Auto-generated method
 		return false;
 	}
-
+	
 	@Override
 	public void callback(Response response) {
 		if (response.responseCode()) {
 			System.out.println("Successfull operation");
 		}
-
 	}
-
 }

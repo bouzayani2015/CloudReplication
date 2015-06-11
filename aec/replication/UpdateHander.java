@@ -10,8 +10,8 @@ import edu.kit.aifb.dbe.hermes.Request;
 import edu.kit.aifb.dbe.hermes.Response;
 
 public class UpdateHander
-		implements IRequestHandler, AsyncCallbackRecipient {
-
+implements IRequestHandler, AsyncCallbackRecipient {
+	
 	@Override
 	public Response handleRequest(Request req) {
 		List<Serializable> items = new ArrayList<Serializable>();
@@ -24,29 +24,29 @@ public class UpdateHander
 		Response resp = new Response(Storage.getInstance().read(key), "Result for update:", true, req);
 		System.out.println("Result for Update is :" + Storage.getInstance().read(key));
 		// TODO Forward the request according to the replication path
-		
-		return resp;
-		
-	}
 
+		return resp;
+
+	}
+	
 	@Override
 	public boolean hasPriority() {
 		// TODO Auto-generated method stub
 		return false;
 	}
-
+	
 	@Override
 	public boolean requiresResponse() {
 		// TODO Auto-generated method stub
 		return false;
 	}
-
+	
 	@Override
 	public void callback(Response response) {
 		if (response.responseCode()) {
 			System.out.println("Successfull Update operation");
 		}
-
+		
 	}
-	
+
 }
