@@ -2,6 +2,10 @@ package aec.replication;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -18,6 +22,11 @@ public class Parsing {
 	private String xmlElement;
 	private String attrName;
 	private String attrValue;
+
+	private Map<String, Set<String>> map = new HashMap<String, Set<String>>();
+	private Set<String> attrSet = new HashSet<String>();;
+	private String key;
+	private String myID;
 	
 	public Parsing(String xmlElement, String attrName, String attrValue) {
 		this.xmlElement = xmlElement;
@@ -37,42 +46,70 @@ public class Parsing {
 	}
 	
 	public void printNote(NodeList nodeList) {
-		
 		for (int count = 0; count < nodeList.getLength(); count++) {
-			
-			Node tempNode = nodeList.item(count);
+			String k;
+			Node node = nodeList.item(count);
 			
 			// make sure it's element node.
-			if (tempNode.getNodeType() == Node.ELEMENT_NODE) {
+			if (node.getNodeType() == Node.ELEMENT_NODE) {
 				// xmlElement can be path, link , qparticipant
-				setXmlElement(tempNode.getNodeName());
+				setXmlElement(node.getNodeName());
+
 				// get node name and value
-				System.out.println("\nNode Name =" + tempNode.getNodeName() + " [OPEN]");
-				System.out.println("Node Value =" + tempNode.getTextContent() + "value");
+				System.out.println("\nNode Name =" + node.getNodeName() + " [OPEN]");
 				
-				if (tempNode.hasAttributes()) {
+				System.out.println("Node Value =" + node.getTextContent() + "value");
+				
+				if (node.hasAttributes()) {
 					
 					// get attributes names and values
-					NamedNodeMap nodeMap = tempNode.getAttributes();
+					NamedNodeMap nodeMap = node.getAttributes();
 					
 					for (int i = 0; i < nodeMap.getLength(); i++) {
 						
-						Node node = nodeMap.item(i);
-						attrName = node.getNodeName();
-						attrValue = node.getNodeValue();
-						System.out.println("attr name : " + node.getNodeName());
-						System.out.println("attr value : " + node.getNodeValue());
+						Node nodes = nodeMap.item(i);
+						attrName = nodes.getNodeName();
+						attrValue = nodes.getNodeValue();
+						/*
+						 * if (node.getNodeName().equals("path")) {
+						 * setKey(nodes.getNodeValue());
+						 * System.out.println("the key is =" + getKey()); }
+						 */
+						
+						if (node.getNodeName().equals("link")) {
+							String src = nodes.getNodeValue();
+							
+							// TODO it should compare with my ID
+							if ((nodes.getNodeValue().equals("nodeA"))) {
+
+								setKey(node.getParentNode().getAttributes().item(0).getNodeValue());
+								System.out.println("the key is = " + getKey());
+							}
+
+							if (nodes.getNodeName().equals("type")) {
+								attrSet.add(nodes.getNodeValue());
+								System.out.println("Type : " + nodes.getNodeValue());
+							}
+							if (nodes.getNodeName().equals("target")) {
+								attrSet.add(nodes.getNodeValue());
+								System.out.println("Target : " + nodes.getNodeValue());
+							}
+
+							// }
+							System.out.println("attr name : " + nodes.getNodeName());
+							System.out.println("attr value : " + nodes.getNodeValue());
+							
+						}
 						
 					}
-					
 				}
 				
-				if (tempNode.hasChildNodes()) {
-					printNote(tempNode.getChildNodes());
+				if (node.hasChildNodes()) {
+					printNote(node.getChildNodes());
 					System.out.println("has child nodes ");
 				}
-				
-				System.out.println("Node Name =" + tempNode.getNodeName() + " [CLOSE]");
+				map.put(key, attrSet);
+				System.out.println("Node Name =" + node.getNodeName() + " [CLOSE]");
 				
 			}
 		}
@@ -111,6 +148,38 @@ public class Parsing {
 	
 	public void setAttrValue(String attrValue) {
 		this.attrValue = attrValue;
+	}
+
+	public Map<String, Set<String>> getMap() {
+		return map;
+	}
+
+	public void setMap(Map<String, Set<String>> map) {
+		this.map = map;
+	}
+
+	public String getKey() {
+		return key;
+	}
+
+	public void setKey(String key) {
+		this.key = key;
+	}
+
+	public Set<String> getAttrSet() {
+		return attrSet;
+	}
+
+	public void setAttrSet(Set<String> attrSet) {
+		this.attrSet = attrSet;
+	}
+
+	public String getMyID() {
+		return myID;
+	}
+
+	public void setMyID(String myID) {
+		this.myID = myID;
 	}
 	
 }
