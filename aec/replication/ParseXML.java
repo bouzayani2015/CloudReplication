@@ -26,44 +26,41 @@ public class ParseXML {
 		
 	}
 
-	public void parsingXML(Document doc) {
-		
+		public void parsingXML(Document doc) {
+
 		String key = null;
-		
+		List<String> oldSet = new ArrayList<String>();
+
 		doc.getDocumentElement().normalize();
 		System.out.println("Root element :" + doc.getDocumentElement().getNodeName());
-
-		NodeList nList = doc.getElementsByTagName("link");
 		
+		NodeList nList = doc.getElementsByTagName("link");
+
 		System.out.println("----------------------------");
 		for (int temp = 0; temp < nList.getLength(); temp++) {
 			List<String> attrSet = new ArrayList<String>();
-			
+
 			Node nNode = nList.item(temp);
-			
+
 			System.out.println("\nCurrent Element :" + nNode.getNodeName());
-			
+
 			if (nNode.getNodeType() == Node.ELEMENT_NODE) {
-				
+
 				Element eElement = (Element) nNode;
-				
+
 				String src = eElement.getAttribute("src");
-
-				// attrSet.add(src);
-
-				// System.out.println("the source is  " + src);
-				if (src.equals("nodeB")) {
+				if (src.equals("nodeC")) {
 					key = eElement.getParentNode().getAttributes().item(0).getNodeValue();
 					System.out.println("the  key is " + key);
 					String type = eElement.getAttribute("type");
 					System.out.println("the type is  " + type);
 					attrSet.add(type);
-
+					
 					if (type.equals("sync") || type.equals("async")) {
-						
+
 						String target = eElement.getAttribute("target");
 						attrSet.add(target);
-						
+
 						System.out.println("the target is  " + target);
 					} else {
 						Integer qsize = Integer.valueOf(eElement.getAttribute("qsize"));
@@ -79,35 +76,42 @@ public class ParseXML {
 						}
 					}
 
-					map.put(key, attrSet);
-					
+					if (map.containsKey(key)) {
+						attrSet.addAll(oldSet);
+						map.put(key, attrSet);
+						
+					} else {
+						oldSet = attrSet;
+						map.put(key, attrSet);
+					}
+
 				}
-				
+
 			}
-			
+
 			setMap(map);
-			
+
 		}
-		
+
 	}
-	
+
 	public HashMap<String, List<String>> getMap() {
 		return map;
 	}
-	
+
 	public void setMap(HashMap<String, List<String>> map) {
 		this.map = map;
 	}
-
+	
 	public void readMap(HashMap<String, List<String>> map) {
 		System.out.println("The map is " + map.toString());
 		for (String name : map.keySet()) {
-			
+
 			String key = name.toString();
 			String value = map.get(name).toString();
 			System.out.println("the key is " + key + " The value is  " + value);
-			
+
 		}
-		
+
 	}
 }
